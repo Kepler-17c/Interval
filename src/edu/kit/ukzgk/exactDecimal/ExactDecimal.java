@@ -9,7 +9,7 @@ import java.math.BigInteger;
  * of represented values.
  * 
  * @author Florian Gilges
- * @version 201710242128
+ * @version 201711030028
  */
 public class ExactDecimal implements Comparable<ExactDecimal> {
 	private enum Status {
@@ -498,25 +498,25 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	}
 	
 	private static BigInteger[] cancelFraction (BigInteger numerator, BigInteger denominator) {
-		if (numerator.compareTo(BigInteger.ZERO) == 0 || denominator.compareTo(BigInteger.ZERO) == 0) {
-			return new BigInteger[] { numerator, denominator };
-		}
 		if (numerator.compareTo(BigInteger.ONE) == 0 || denominator.compareTo(BigInteger.ONE) == 0) {
 			return new BigInteger[] { numerator, denominator };
 		}
 		
-		boolean foundGCD = true;
+		if (numerator.equals(BigInteger.ZERO) && denominator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ZERO, BigInteger.ZERO };
+		}
+		if (numerator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ZERO, BigInteger.ONE };
+		}
+		if (denominator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO };
+		}
+		
 		BigInteger a = numerator;
 		BigInteger b = denominator;
-		while (foundGCD) {
-			foundGCD = false;
-			BigInteger gcd = a.gcd(b);
-			if (gcd.compareTo(BigInteger.ONE) != 0) {
-				a = a.divide(gcd);
-				b = b.divide(gcd);
-				foundGCD = true;
-			}
-		}
+		BigInteger gcd = a.gcd(b);
+		a = a.divide(gcd);
+		b = b.divide(gcd);
 		return new BigInteger[] { a, b };
 	}
 	
