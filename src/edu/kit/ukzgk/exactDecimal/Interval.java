@@ -14,14 +14,6 @@ public class Interval {
 		this.lowerBound = ExactDecimal.min(boundA, boundB);
 	}
 	
-	public Interval (byte value) {
-		this(new ExactDecimal(value));
-	}
-	
-	public Interval (short value) {
-		this(new ExactDecimal(value));
-	}
-	
 	public Interval (int value) {
 		this(new ExactDecimal(value));
 	}
@@ -48,12 +40,11 @@ public class Interval {
 	}
 	
 	public Interval multiply (Interval interval) {
-		return new Interval(this.lowerBound.multiply(interval.lowerBound),
-				this.upperBound.multiply(interval.upperBound));
+		throw new UnsupportedOperationException("Not implemented yet: Interval#multiply(Interval)"); // TODO
 	}
 	
 	public Interval divide (Interval interval) {
-		return new Interval(this.lowerBound.divide(interval.lowerBound), this.upperBound.divide(interval.upperBound));
+		throw new UnsupportedOperationException("Not implemented yet: Interval#divide(Interval)"); // TODO
 	}
 	
 	public Interval abs () {
