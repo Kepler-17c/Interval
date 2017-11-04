@@ -1,0 +1,16 @@
+This file contains two sections:
+> TODOs are precise tasks
+> Problems are general descriptions, leading to tasks (or TODOs)
+
+
+-==###  TODOs  ###==-
+> implement Interval#multipy(Interval)
+> implement Interval#divide(Interval)
+
+
+-==###  Problems  ###==-
+> Chains of multiplications create larger and larger numbers in ExactDecimal fractions. Growing to
+  millions of digits, they will literally freeze the program. An alternate data structure/internal
+  format might help.
+  One idea is using arrays or maps to count prime factors (easy for multiplication but difficult for
+  addition because of factorization).
