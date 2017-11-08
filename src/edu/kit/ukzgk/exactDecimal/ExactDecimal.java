@@ -43,11 +43,11 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	/**
 	 * Positive infinity constant. Equal to: {@code new ExactDecimal(1,0)}
 	 */
-	public static final ExactDecimal	POSITIVE_INFINITY	= new ExactDecimal(false, BigInteger.ONE, BigInteger.ZERO);
+	public static final ExactDecimal	POSITIVE_INFINITY	= new ExactDecimal(1, 0);
 	/**
 	 * Negative infinity constant. Equal to: {@code new ExactDecimal(-1,0)}
 	 */
-	public static final ExactDecimal	NEGATIVE_INFINITY	= new ExactDecimal(true, BigInteger.ONE, BigInteger.ZERO);
+	public static final ExactDecimal	NEGATIVE_INFINITY	= new ExactDecimal(-1, 0);
 	/**
 	 * NaN (not a number) constant. Evaluates where no finite nor infinite value can be calculated (e.g. {@code 0/0} or
 	 * {@code ExactDecimal#POSITIVE_INFINITY#subtract(ExactDecimal#POSITIVE_INFINITY)} )
