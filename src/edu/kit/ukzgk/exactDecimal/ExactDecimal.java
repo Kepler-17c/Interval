@@ -9,7 +9,7 @@ import java.math.BigInteger;
  * of represented values.
  * 
  * @author Florian Gilges
- * @version 201711030028
+ * @version 201711090224
  */
 public class ExactDecimal implements Comparable<ExactDecimal> {
 	private enum Status {
@@ -82,8 +82,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			sign ^= true;
 		}
 		
-		BigInteger n = new BigInteger(Long.toHexString(numerator), 16);
-		BigInteger d = new BigInteger(Long.toHexString(denominator), 16);
+		BigInteger n = new BigInteger(ExactDecimal.longToBigIntegerByteArray(numerator));
+		BigInteger d = new BigInteger(ExactDecimal.longToBigIntegerByteArray(denominator));
 		
 		BigInteger[] fraction = cancelFraction(n, d);
 		this.numerator = sign ? fraction[0].negate() : fraction[0];
@@ -98,25 +98,16 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 *            The value of the new {@link ExactDecimal}
 	 */
 	public ExactDecimal (long value) {
-		this(value < 0, new byte[] { (byte) (value >>> 56), (byte) (value >>> 48), (byte) (value >>> 40),
-				(byte) (value >>> 32), (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8),
-				(byte) (value) });
+		this(ExactDecimal.longToBigIntegerByteArray(value));
 	}
 	
-	/**
-	 * Simple constructor, creating an {@link ExactDecimal} from a {@link Integer}.
-	 * 
-	 * @param value
-	 *            The value of the new {@link ExactDecimal}
-	 */
-	public ExactDecimal (int value) {
-		this(value < 0,
-				new byte[] { (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) (value) });
+	private static byte[] longToBigIntegerByteArray (long value) {
+		return new byte[] { (byte) (value >>> 56), (byte) (value >>> 48), (byte) (value >>> 40), (byte) (value >>> 32),
+				(byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) (value) };
 	}
 	
-	private ExactDecimal (boolean sign, byte[] value) {
-		BigInteger num = new BigInteger(value).abs();
-		this.numerator = sign ? num.negate() : num;
+	private ExactDecimal (byte[] value) {
+		this.numerator = new BigInteger(value);
 		this.denominator = BigInteger.ONE;
 		this.status = this.getStatus();
 	}
