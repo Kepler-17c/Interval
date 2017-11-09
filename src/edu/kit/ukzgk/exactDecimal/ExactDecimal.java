@@ -117,7 +117,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			this.status = ExactDecimal.NOT_A_NUMBER.status;
 			return;
 		} else if (Double.isInfinite(value)) {
-			this.numerator = ExactDecimal.POSITIVE_INFINITY.numerator;
+			this.numerator = value < 0 ? ExactDecimal.NEGATIVE_INFINITY.numerator
+					: ExactDecimal.POSITIVE_INFINITY.numerator;
 			this.denominator = ExactDecimal.POSITIVE_INFINITY.denominator;
 			this.status = this.getStatus();
 			return;
@@ -160,7 +161,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			this.status = ExactDecimal.NOT_A_NUMBER.status;
 			return;
 		} else if (Float.isInfinite(value)) {
-			this.numerator = ExactDecimal.POSITIVE_INFINITY.numerator;
+			this.numerator = value < 0 ? ExactDecimal.NEGATIVE_INFINITY.numerator
+					: ExactDecimal.POSITIVE_INFINITY.numerator;
 			this.denominator = ExactDecimal.POSITIVE_INFINITY.denominator;
 			this.status = this.getStatus();
 			return;
@@ -265,8 +267,10 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	}
 	
 	public ExactDecimal (BigInteger numerator, BigInteger denominator) {
-		boolean sign = numerator.signum() < 0;
-		BigInteger[] fraction = cancelFraction(numerator.abs(), denominator);
+		int signNumerator = numerator.signum() == 0 ? 1 : numerator.signum();
+		int signDenominator = denominator.signum() == 0 ? 1 : denominator.signum();
+		boolean sign = signNumerator * signDenominator < 0;
+		BigInteger[] fraction = cancelFraction(numerator.abs(), denominator.abs());
 		this.numerator = sign ? fraction[0].negate() : fraction[0];
 		this.denominator = fraction[1];
 		this.status = this.getStatus();
@@ -354,22 +358,24 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return A new instance, holding the result.
 	 */
 	public ExactDecimal add (ExactDecimal a) {
-		if (this.status == Status.NOT_A_NUMBER || a.status == Status.NOT_A_NUMBER) {
+		if (this.isNaN() || a.isNaN()) {
 			return NOT_A_NUMBER;
+		}
+		
+		if (this.isInfinite() || a.isInfinite()) {
+			if (this.signum() == a.signum()) {
+				return this.signum() < 0 ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
+			}
+			if (this.isInfinite() && a.isInfinite()) {
+				return NOT_A_NUMBER;
+			}
+			return this.isInfinite() ? this : a;
 		}
 		
 		BigInteger numeratorThis = this.numerator.multiply(a.denominator);
 		BigInteger numeratorA = a.numerator.multiply(this.denominator);
 		BigInteger denominator = this.denominator.multiply(a.denominator);
-		ExactDecimal result = new ExactDecimal(numeratorThis.add(numeratorA), denominator);
-		if (result.status != Status.NOT_A_NUMBER) {
-			return result;
-		}
-		
-		if (this.signum() == a.signum()) {
-			return this.signum() < 0 ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
-		}
-		return NOT_A_NUMBER;
+		return new ExactDecimal(numeratorThis.add(numeratorA), denominator);
 	}
 	
 	/**
@@ -380,22 +386,24 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return A new instance, holding the result.
 	 */
 	public ExactDecimal subtract (ExactDecimal a) {
-		if (this.status == Status.NOT_A_NUMBER || a.status == Status.NOT_A_NUMBER) {
+		if (this.isNaN() || a.isNaN()) {
 			return NOT_A_NUMBER;
+		}
+		
+		if (this.isInfinite() || a.isInfinite()) {
+			if (this.signum() != a.signum()) {
+				return this.signum() < 0 ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
+			}
+			if (this.isInfinite() && a.isInfinite()) {
+				return NOT_A_NUMBER;
+			}
+			return this.isInfinite() ? this : a.negate();
 		}
 		
 		BigInteger numeratorThis = this.numerator.multiply(a.denominator);
 		BigInteger numeratorA = a.numerator.multiply(this.denominator);
 		BigInteger denominator = this.denominator.multiply(a.denominator);
-		ExactDecimal result = new ExactDecimal(numeratorThis.subtract(numeratorA), denominator);
-		if (result.status != Status.NOT_A_NUMBER) {
-			return result;
-		}
-		
-		if (this.signum() == a.signum()) {
-			return NOT_A_NUMBER;
-		}
-		return this.signum() < 0 ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
+		return new ExactDecimal(numeratorThis.subtract(numeratorA), denominator);
 	}
 	
 	/**
@@ -434,9 +442,9 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	}
 	
 	/**
-	 * Returns the negative absolute value of this number.
+	 * Returns a BigInteger whose value is {@code (-this)}.
 	 * 
-	 * @return The negative value.
+	 * @return {@code -this}
 	 */
 	public ExactDecimal negate () {
 		return new ExactDecimal(this.numerator.negate(), this.denominator);
@@ -563,7 +571,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		}
 		
 		String result = this.signum() < 0 ? "-" : "";
-		BigInteger[] div = this.numerator.divideAndRemainder(this.denominator);
+		BigInteger numeratorAbs = this.numerator.abs();
+		BigInteger[] div = numeratorAbs.divideAndRemainder(this.denominator);
 		String decimalDigits;
 		if (decimals == 0) {
 			decimalDigits = "";
