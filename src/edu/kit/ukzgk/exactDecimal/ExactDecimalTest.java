@@ -714,7 +714,7 @@ public class ExactDecimalTest {
 		String s = "";
 		boolean b = false;
 		try {
-			new ExactDecimal(s);
+			ExactDecimal.stringToExactDecimal(s);
 		} catch (NumberFormatException e) {
 			b = true;
 		}
@@ -724,105 +724,105 @@ public class ExactDecimalTest {
 	@Test
 	public void constructors01 () {
 		String s = "Infinity";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors02 () {
 		String s = "+Infinity";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals("Infinity", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors03 () {
 		String s = "-Infinity";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors04 () {
 		String s = "NaN";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors05 () {
 		String s = "3.14159";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s + "000", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors06 () {
 		String s = "+314.159";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals("314.15900000", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors07 () {
 		String s = "-31415.9";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s + "0000000", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors08 () {
 		String s = "1E5";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals("100000.00000000", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors09 () {
 		String s = "314159265358979323E-17";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals("3.14159265", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors10 () {
 		String s = "271828.1828E-5";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals("2.71828182", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors11 () {
 		String s = "734982";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s + ".00000000", a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors12 () {
 		String s = "0.00000000";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors13 () {
 		String s = "0.00000000";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors14 () {
 		String s = "0.00000000";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	
 	@Test
 	public void constructors15 () {
 		String s = "0.00000000";
-		ExactDecimal a = new ExactDecimal(s);
+		ExactDecimal a = ExactDecimal.stringToExactDecimal(s);
 		assertEquals(s, a.toStringAdvanced(8));
 	}
 	

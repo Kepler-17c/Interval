@@ -195,19 +195,12 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @param decimalString
 	 *            The decimal floating point number as string.
 	 */
-	public ExactDecimal (String decimalString) {
-		boolean sign;
-		BigInteger numerator;
-		BigInteger denominator;
-		
+	public static ExactDecimal stringToExactDecimal (String decimalString) {
 		if (decimalString.matches("(([+\\-]?Infinity)|NaN)")) {
 			if (decimalString.equals("NaN")) {
-				sign = false;
-				numerator = BigInteger.ZERO;
-				denominator = BigInteger.ZERO;
+				return NOT_A_NUMBER;
 			} else {
-				numerator = BigInteger.ONE;
-				denominator = BigInteger.ZERO;
+				boolean sign;
 				switch (decimalString.charAt(0)) {
 					case '-':
 						sign = true;
@@ -216,18 +209,15 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 						sign = false;
 						break;
 				}
+				return sign ? NEGATIVE_INFINITY : POSITIVE_INFINITY;
 			}
-			this.numerator = sign ? numerator.negate() : numerator;
-			this.denominator = denominator;
-			this.status = this.getStatus();
-			return;
 		}
 		
 		if (!decimalString.matches("[+\\-]?[0-9]+(\\.[0-9]+)?([eE][+\\-]?[0-9]+)?")) {
 			throw new NumberFormatException();
 		}
 		
-		sign = false;
+		boolean sign = false;
 		if (decimalString.startsWith("-")) {
 			sign = true;
 			decimalString = decimalString.substring(1);
@@ -248,6 +238,9 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			decimals = split[1];
 		}
 		
+		BigInteger numerator;
+		BigInteger denominator;
+		
 		String allDigits = digits + decimals;
 		exponent -= decimals.length();
 		if (exponent < 0) {
@@ -260,10 +253,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			denominator = BigInteger.ONE;
 		}
 		
-		BigInteger[] fraction = cancelFraction(numerator, denominator);
-		this.numerator = sign ? fraction[0].negate() : fraction[0];
-		this.denominator = fraction[1];
-		this.status = this.getStatus();
+		numerator = sign ? numerator.negate() : numerator;
+		return new ExactDecimal(numerator, denominator);
 	}
 	
 	public ExactDecimal (BigInteger numerator, BigInteger denominator) {
