@@ -9,7 +9,7 @@ import java.math.BigInteger;
  * of represented values.
  * 
  * @author Florian Gilges
- * @version 201711090224
+ * @version 201711090317
  */
 public class ExactDecimal implements Comparable<ExactDecimal> {
 	private enum Status {
@@ -101,17 +101,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		this(ExactDecimal.longToBigIntegerByteArray(value));
 	}
 	
-	private static byte[] longToBigIntegerByteArray (long value) {
-		return new byte[] { (byte) (value >>> 56), (byte) (value >>> 48), (byte) (value >>> 40), (byte) (value >>> 32),
-				(byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) (value) };
-	}
-	
-	private ExactDecimal (byte[] value) {
-		this.numerator = new BigInteger(value);
-		this.denominator = BigInteger.ONE;
-		this.status = this.getStatus();
-	}
-	
 	/**
 	 * Simple constructor, creating an {@link ExactDecimal} from a {@link Double}.
 	 * 
@@ -195,17 +184,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		this.numerator = sign ? numerator.negate() : numerator;
 		this.denominator = denominator;
 		this.status = this.getStatus();
-	}
-	
-	// creates a BigInteger instance with the value of 2^exponent
-	private static BigInteger exponentToNumber (int exponent) {
-		int byteSize = exponent / 8;
-		int shiftInByte = exponent % 8;
-		byte[] bigIntArray = new byte[byteSize + 1 + (shiftInByte == 0x80 ? 1 : 0)];
-		// note: the most significant byte of a BigInteger is the arrays 0-byte
-		// all bytes describe the number in 2s-complement and therefore might need a leading zero
-		bigIntArray[shiftInByte == 0x80 ? 1 : 0] = (byte) (1 << shiftInByte);
-		return new BigInteger(bigIntArray);
 	}
 	
 	/**
@@ -292,6 +270,71 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		this.numerator = sign ? fraction[0].negate() : fraction[0];
 		this.denominator = fraction[1];
 		this.status = this.getStatus();
+	}
+	
+	private ExactDecimal (byte[] value) {
+		this.numerator = new BigInteger(value);
+		this.denominator = BigInteger.ONE;
+		this.status = this.getStatus();
+	}
+	
+	// creates a BigInteger instance with the value of 2^exponent
+	private static BigInteger exponentToNumber (int exponent) {
+		int byteSize = exponent / 8;
+		int shiftInByte = exponent % 8;
+		byte[] bigIntArray = new byte[byteSize + 1 + (shiftInByte == 0x80 ? 1 : 0)];
+		// note: the most significant byte of a BigInteger is the arrays 0-byte
+		// all bytes describe the number in 2s-complement and therefore might need a leading zero
+		bigIntArray[shiftInByte == 0x80 ? 1 : 0] = (byte) (1 << shiftInByte);
+		return new BigInteger(bigIntArray);
+	}
+	
+	private static byte[] longToBigIntegerByteArray (long value) {
+		return new byte[] { (byte) (value >>> 56), (byte) (value >>> 48), (byte) (value >>> 40), (byte) (value >>> 32),
+				(byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) (value) };
+	}
+	
+	private static BigInteger[] cancelFraction (BigInteger numerator, BigInteger denominator) {
+		if (numerator.compareTo(BigInteger.ONE) == 0 || denominator.compareTo(BigInteger.ONE) == 0) {
+			return new BigInteger[] { numerator, denominator };
+		}
+		
+		if (numerator.equals(BigInteger.ZERO) && denominator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ZERO, BigInteger.ZERO };
+		}
+		if (numerator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ZERO, BigInteger.ONE };
+		}
+		if (denominator.equals(BigInteger.ZERO)) {
+			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO };
+		}
+		
+		BigInteger a = numerator;
+		BigInteger b = denominator;
+		BigInteger gcd = a.gcd(b);
+		a = a.divide(gcd);
+		b = b.divide(gcd);
+		return new BigInteger[] { a, b };
+	}
+	
+	private static String fillString (String string, int length, char fillCharacter) {
+		String filler = Character.toString(fillCharacter);
+		int diff = length - string.length();
+		if (diff <= 0) {
+			return string;
+		}
+		String spaces = "";
+		
+		int mask = Integer.highestOneBit(diff);
+		while (mask != 0) {
+			spaces += spaces;
+			if ((mask & diff) != 0) {
+				spaces += filler;
+			}
+			mask >>>= 1;
+		}
+		
+		return string + spaces;
 	}
 	
 	private Status getStatus () {
@@ -459,29 +502,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return a.compareTo(b) > 0 ? a : b;
 	}
 	
-	private static BigInteger[] cancelFraction (BigInteger numerator, BigInteger denominator) {
-		if (numerator.compareTo(BigInteger.ONE) == 0 || denominator.compareTo(BigInteger.ONE) == 0) {
-			return new BigInteger[] { numerator, denominator };
-		}
-		
-		if (numerator.equals(BigInteger.ZERO) && denominator.equals(BigInteger.ZERO)) {
-			return new BigInteger[] { BigInteger.ZERO, BigInteger.ZERO };
-		}
-		if (numerator.equals(BigInteger.ZERO)) {
-			return new BigInteger[] { BigInteger.ZERO, BigInteger.ONE };
-		}
-		if (denominator.equals(BigInteger.ZERO)) {
-			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO };
-		}
-		
-		BigInteger a = numerator;
-		BigInteger b = denominator;
-		BigInteger gcd = a.gcd(b);
-		a = a.divide(gcd);
-		b = b.divide(gcd);
-		return new BigInteger[] { a, b };
-	}
-	
 	/**
 	 * Returns whether {@code this} is NaN (not a number).
 	 * 
@@ -634,25 +654,5 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			return this.compareTo(other) == 0;
 		}
 		return false;
-	}
-	
-	private static String fillString (String string, int length, char fillCharacter) {
-		String filler = Character.toString(fillCharacter);
-		int diff = length - string.length();
-		if (diff <= 0) {
-			return string;
-		}
-		String spaces = "";
-		
-		int mask = Integer.highestOneBit(diff);
-		while (mask != 0) {
-			spaces += spaces;
-			if ((mask & diff) != 0) {
-				spaces += filler;
-			}
-			mask >>>= 1;
-		}
-		
-		return string + spaces;
 	}
 }
