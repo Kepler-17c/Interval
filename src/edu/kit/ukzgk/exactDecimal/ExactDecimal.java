@@ -189,8 +189,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	}
 	
 	/**
-	 * Advanced constructor, parsing a decimal floating point string in scientific notation. Values are handled as if
-	 * their decimals were finite.
+	 * Factory method for parsing a decimal floating point string in scientific notation. Values are handled as if their
+	 * decimals were finite.
 	 * 
 	 * @param decimalString
 	 *            The decimal floating point number as string.
