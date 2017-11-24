@@ -1,4 +1,6 @@
-package edu.kit.ukzgk.exactDecimal;
+package edu.kit.ukzgk.interval;
+
+import edu.kit.ukzgk.exactDecimal.ExactDecimal;
 
 public class Interval {
 	private final ExactDecimal	upperBound;
