@@ -1,4 +1,4 @@
-package edu.kit.ukzgk.number;
+package edu.kit.ukzgk.interval.number;
 
 /*-
  * Symbols for description:
@@ -32,7 +32,7 @@ package edu.kit.ukzgk.number;
  *
  * @param <T>
  */
-public interface NumberInterface<T> extends Comparable<T> {
+public interface Number<T> extends Comparable<T> {
 	public T add (T number);
 	
 	public T subtract (T number);
