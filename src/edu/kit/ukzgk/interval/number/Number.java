@@ -45,7 +45,9 @@ public interface Number<T> extends Comparable<T> {
 	
 	public T negative ();
 	
-	public int signum ();
+	public int intSign ();
+	
+	public T signum ();
 	
 	public T negate (T number);
 	
