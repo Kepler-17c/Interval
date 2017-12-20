@@ -78,8 +78,22 @@ package edu.kit.ukzgk.interval.number;
  *            The set type for the field.
  */
 public interface Number<T> extends Comparable<T> {
+	/**
+	 * Performs the operation for the fields first composition.
+	 * 
+	 * @param number
+	 *            The number to add to this.
+	 * @return The result of {@code this + number} in a new instance.
+	 */
 	public T add (T number);
 	
+	/**
+	 * Performs add with the additive inverse of {@code number}.
+	 * 
+	 * @param number
+	 *            The number whose additive inverse to add to this.
+	 * @return The result of {@code this + (-number)} in a new instance.
+	 */
 	public T subtract (T number);
 	
 	public T multiply (T number);
