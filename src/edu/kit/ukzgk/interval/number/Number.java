@@ -96,19 +96,65 @@ public interface Number<T> extends Comparable<T> {
 	 */
 	public T subtract (T number);
 	
+	/**
+	 * Performs the operation for the fields second composition.
+	 * 
+	 * @param number
+	 *            The number to multiply this with.
+	 * @return The result of {@code this * number} in a new instance.
+	 */
 	public T multiply (T number);
 	
+	/**
+	 * Performs multiply with the multiplicative inverse of {@code number}.
+	 * 
+	 * @param number
+	 *            The number whose multiplicative inverse to multiply this with.
+	 * @return The result of <code>this * number<sup>-1</sup></code> in a new instance.
+	 */
 	public T divide (T number);
 	
+	/**
+	 * Returns the number's absolute value. The result is equal to {@code this.multiply(this.signum())}.
+	 * 
+	 * @return {@code |this|}
+	 */
 	public T abs ();
 	
+	/**
+	 * Returns the number's absolute negative value. The result is equal to {@code this.abs().negate()}.
+	 * 
+	 * @return {@code -|this|}
+	 */
 	public T negative ();
 	
+	/**
+	 * Returns the number's sign in an integer. Values greater than or less than zero result in {@code +1} and
+	 * {@code -1} respectively, while zero results in {@code 0}.
+	 * 
+	 * @return The sign as integer.
+	 */
 	public int intSign ();
 	
+	/**
+	 * Returns the number's sign as value in the same field. Values greater than or less than zero result in {@code +1}
+	 * and {@code -1} respectively, while zero results in {@code 0}.
+	 * 
+	 * @return The sign as <code> &#123;+1, 0, -1&#125;</code> in T.
+	 */
 	public T signum ();
 	
-	public T negate (T number);
+	/**
+	 * Returns the number's additive inverse.
+	 * 
+	 * @return {@code -this}
+	 */
+	public T negate ();
 	
-	public T reciprocate (T number);
+	/**
+	 * Returns the number's multiplicative inverse.
+	 * 
+	 * @return {@code 1/this}
+	 */
+	public T reciprocate ();
 }
