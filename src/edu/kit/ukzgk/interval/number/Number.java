@@ -140,7 +140,7 @@ public interface Number<T> extends Comparable<T> {
 	 * Returns the number's sign as value in the same field. Values greater than or less than zero result in {@code +1}
 	 * and {@code -1} respectively, while zero results in {@code 0}.
 	 * 
-	 * @return The sign as <code> &#123;+1, 0, -1&#125;</code> in T.
+	 * @return The sign as <code>&#123;+1, 0, -1&#125;</code> in T.
 	 */
 	public T signum ();
 	
@@ -154,7 +154,7 @@ public interface Number<T> extends Comparable<T> {
 	/**
 	 * Returns the number's multiplicative inverse.
 	 * 
-	 * @return {@code 1/this}
+	 * @return <code>this<sup>-1</sup></code>
 	 */
 	public T reciprocate ();
 }
