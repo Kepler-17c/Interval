@@ -1,4 +1,4 @@
-package edu.kit.ukzgk.exactDecimal;
+package edu.kit.ukzgk.exactDecimalTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 
 import org.junit.Test;
+
+import edu.kit.ukzgk.exactDecimal.ExactDecimal;
 
 public class ExactDecimalTest {
 	@Test
