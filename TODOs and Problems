@@ -4,7 +4,7 @@ This file contains two sections:
 
 
 -==###  TODOs  ###==-
-> implement Interval#multipy(Interval)
+> implement Interval#multiply(Interval)
 > implement Interval#divide(Interval)
 > replace ExactDecimal in Interval with Number
 
@@ -14,4 +14,4 @@ This file contains two sections:
   millions of digits, they will literally freeze the program. An alternate data structure/internal
   format might help.
   One idea is using arrays or maps to count prime factors (easy for multiplication but difficult for
-  addition because of factorization).
+  addition because of factorisation).
