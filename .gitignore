@@ -28,5 +28,7 @@ bin/
 
 # NetBeans files
 nbproject/
-build.xml
 manifest.mf
+
+# maven
+target/
