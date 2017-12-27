@@ -6,6 +6,7 @@ This file contains two sections:
 -==###  TODOs  ###==-
 > implement Interval#multipy(Interval)
 > implement Interval#divide(Interval)
+> replace ExactDecimal in Interval with Number
 
 
 -==###  Problems  ###==-
