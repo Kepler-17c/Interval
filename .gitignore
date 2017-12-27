@@ -25,3 +25,10 @@ hs_err_pid*
 bin/
 .project
 .classpath
+
+# NetBeans files
+nbproject/
+manifest.mf
+
+# maven
+target/
