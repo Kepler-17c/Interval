@@ -56,12 +56,17 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 */
 	public static final ExactDecimal NOT_A_NUMBER = new ExactDecimal(0, 0);
 	
+	/**
+	 * The special value status of the number (e.g. NaN).
+	 */
 	private final Status status;
-	/*-
-	 * numerator contains the sign,
-	 * while denominator is guaranteed to be positive
+	/**
+	 * The numerator of the fraction. Its sign is the sign of the fraction.
 	 */
 	private final BigInteger numerator;
+	/**
+	 * The denominator of the fraction. It is guaranteed to be positive.
+	 */
 	private final BigInteger denominator;
 	
 	/**
@@ -259,6 +264,14 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return new ExactDecimal(numerator, denominator);
 	}
 	
+	/**
+	 * Creates a fraction from the given numerator and denominator.
+	 * 
+	 * @param numerator
+	 *            The numerator of the fraction.
+	 * @param denominator
+	 *            The denominator of the fraction.
+	 */
 	public ExactDecimal (BigInteger numerator, BigInteger denominator) {
 		int signNumerator = numerator.signum() == 0 ? 1 : numerator.signum();
 		int signDenominator = denominator.signum() == 0 ? 1 : denominator.signum();
@@ -269,13 +282,26 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		this.status = this.getStatus();
 	}
 	
+	/**
+	 * Private constructor, that takes a {@link BigInteger} byte array representation to create the numerator and sets
+	 * the denominator to {@code 1}.
+	 * 
+	 * @param value
+	 *            The value to create the numerator from.
+	 */
 	private ExactDecimal (byte[] value) {
 		this.numerator = new BigInteger(value);
 		this.denominator = BigInteger.ONE;
 		this.status = this.getStatus();
 	}
 	
-	// creates a BigInteger instance with the value of 2^exponent
+	/**
+	 * Creates a {@link BigInteger} instance with the value of {@code 2^exponent}.
+	 * 
+	 * @param exponent
+	 *            The exponent of the value.
+	 * @return {@code 2^exponent} as {@link BigInteger}.
+	 */
 	private static BigInteger exponentToNumber (int exponent) {
 		int byteSize = exponent / 8;
 		int shiftInByte = exponent % 8;
@@ -286,6 +312,14 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return new BigInteger(bigIntArray);
 	}
 	
+	/**
+	 * Creates the byte array representation of a long, the {@link BigInteger} constructor expects, to contain the same
+	 * value.
+	 * 
+	 * @param value
+	 *            The long value to pack in the array.
+	 * @return The packed array.
+	 */
 	private static byte[] longToBigIntegerByteArray (long value) {
 		return new byte[] { (byte) (value >>> 56), (byte) (value >>> 48), (byte) (value >>> 40), (byte) (value >>> 32),
 				(byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) (value) };
@@ -314,6 +348,18 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return new BigInteger[] { a, b };
 	}
 	
+	/**
+	 * Fills a {@link String} up to a certain length with the specified {@link Character}. {@link String}s with a length
+	 * greater or equal to the length parameter, are returned without change.
+	 * 
+	 * @param string
+	 *            The {@link String} to fill.
+	 * @param length
+	 *            The length to fill up to.
+	 * @param fillCharacter
+	 *            The {@link Character} to fill with.
+	 * @return The filled {@link String}.
+	 */
 	private static String fillString (String string, int length, char fillCharacter) {
 		String filler = Character.toString(fillCharacter);
 		int diff = length - string.length();
@@ -334,6 +380,17 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return string + spaces;
 	}
 	
+	/**
+	 * Determines the special value status:
+	 * <ul>
+	 * <li>Not a Number</li>
+	 * <li>Positive Infinity</li>
+	 * <li>Negative Infinity</li>
+	 * <li>Normal finite value</li>
+	 * </ul>
+	 * 
+	 * @return The special value status.
+	 */
 	private Status getStatus () {
 		if (this.numerator.equals(BigInteger.ZERO) && this.denominator.equals(BigInteger.ZERO)) {
 			return Status.NOT_A_NUMBER;
@@ -530,10 +587,9 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return this.status == Status.INFINITE;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Returns a Decimal-{@link String} representation of the value, with two decimals accuracy. The result is equal to
+	 * {@link ExactDecimal#toStringAdvanced(int)} with parameter {@code 2}.
 	 */
 	@Override
 	public String toString () {
@@ -588,10 +644,16 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return result;
 	}
 	
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Compares two fractions mathematically.<br>
+	 * <ul>
+	 * <li>Comparing two finite values or one finite to an infinite value is trivial.</li>
+	 * <li>Similar special values are considered equal to one another ({@code +Infinity} / {@code -Infinity} /
+	 * {@code NaN}).</li>
+	 * <li>NaN is considered to be larger than any value (like in {@link Double#compareTo(Double)}).</li>
+	 * </ul>
 	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 * @see Double#compareTo(Double)
 	 */
 	@Override
 	public int compareTo (ExactDecimal a) {
