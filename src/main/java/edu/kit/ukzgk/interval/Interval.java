@@ -3,8 +3,8 @@ package edu.kit.ukzgk.interval;
 import edu.kit.ukzgk.exactDecimal.ExactDecimal;
 
 public class Interval {
-	private final ExactDecimal	upperBound;
-	private final ExactDecimal	lowerBound;
+	private final ExactDecimal upperBound;
+	private final ExactDecimal lowerBound;
 	
 	public Interval (ExactDecimal exactDecimal) {
 		this.upperBound = exactDecimal;

@@ -13,54 +13,56 @@ import java.math.BigInteger;
  */
 public class ExactDecimal implements Comparable<ExactDecimal> {
 	private enum Status {
-		VALID, NOT_A_NUMBER, INFINITE;
+		VALID,
+		NOT_A_NUMBER,
+		INFINITE;
 	}
 	
 	/**
 	 * Zero constant. Equal to: {@code new ExactDecimal(0)}
 	 */
-	public static final ExactDecimal	ZERO				= new ExactDecimal(0);
+	public static final ExactDecimal ZERO = new ExactDecimal(0);
 	/**
 	 * One constant. Equal to: {@code new ExactDecimal(1)}
 	 */
-	public static final ExactDecimal	ONE					= new ExactDecimal(1);
+	public static final ExactDecimal ONE = new ExactDecimal(1);
 	/**
 	 * Two constant. Equal to: {@code new ExactDecimal(2)}
 	 */
-	public static final ExactDecimal	TWO					= new ExactDecimal(2);
+	public static final ExactDecimal TWO = new ExactDecimal(2);
 	/**
 	 * Eight constant. Equal to: {@code new ExactDecimal(8)}
 	 */
-	public static final ExactDecimal	EIGHT				= new ExactDecimal(8);
+	public static final ExactDecimal EIGHT = new ExactDecimal(8);
 	/**
 	 * Ten constant. Equal to: {@code new ExactDecimal(10)}
 	 */
-	public static final ExactDecimal	TEN					= new ExactDecimal(10);
+	public static final ExactDecimal TEN = new ExactDecimal(10);
 	/**
 	 * Sixteen constant. Equal to: {@code new ExactDecimal(16)}
 	 */
-	public static final ExactDecimal	SIXTEEN				= new ExactDecimal(16);
+	public static final ExactDecimal SIXTEEN = new ExactDecimal(16);
 	/**
 	 * Positive infinity constant. Equal to: {@code new ExactDecimal(1,0)}
 	 */
-	public static final ExactDecimal	POSITIVE_INFINITY	= new ExactDecimal(1, 0);
+	public static final ExactDecimal POSITIVE_INFINITY = new ExactDecimal(1, 0);
 	/**
 	 * Negative infinity constant. Equal to: {@code new ExactDecimal(-1,0)}
 	 */
-	public static final ExactDecimal	NEGATIVE_INFINITY	= new ExactDecimal(-1, 0);
+	public static final ExactDecimal NEGATIVE_INFINITY = new ExactDecimal(-1, 0);
 	/**
 	 * NaN (not a number) constant. Evaluates where no finite nor infinite value can be calculated (e.g. {@code 0/0} or
 	 * {@code ExactDecimal#POSITIVE_INFINITY#subtract(ExactDecimal#POSITIVE_INFINITY)} )
 	 */
-	public static final ExactDecimal	NOT_A_NUMBER		= new ExactDecimal(0, 0);
+	public static final ExactDecimal NOT_A_NUMBER = new ExactDecimal(0, 0);
 	
-	private final Status				status;
+	private final Status status;
 	/*-
 	 * numerator contains the sign,
 	 * while denominator is guaranteed to be positive
 	 */
-	private final BigInteger			numerator;
-	private final BigInteger			denominator;
+	private final BigInteger numerator;
+	private final BigInteger denominator;
 	
 	/**
 	 * Simple constructor for creating the fraction out of two signed integers. Their signs will work the way
