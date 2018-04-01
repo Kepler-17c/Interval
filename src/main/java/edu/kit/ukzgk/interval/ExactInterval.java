@@ -2,62 +2,62 @@ package edu.kit.ukzgk.interval;
 
 import edu.kit.ukzgk.exactDecimal.ExactDecimal;
 
-public class Interval {
+public class ExactInterval {
 	private final ExactDecimal upperBound;
 	private final ExactDecimal lowerBound;
 	
-	public Interval (ExactDecimal exactDecimal) {
+	public ExactInterval (ExactDecimal exactDecimal) {
 		this.upperBound = exactDecimal;
 		this.lowerBound = exactDecimal;
 	}
 	
-	private Interval (ExactDecimal boundA, ExactDecimal boundB) {
+	private ExactInterval (ExactDecimal boundA, ExactDecimal boundB) {
 		this.upperBound = ExactDecimal.max(boundA, boundB);
 		this.lowerBound = ExactDecimal.min(boundA, boundB);
 	}
 	
-	public Interval (int value) {
+	public ExactInterval (int value) {
 		this(new ExactDecimal(value));
 	}
 	
-	public Interval (long value) {
+	public ExactInterval (long value) {
 		this(new ExactDecimal(value));
 	}
 	
-	public Interval (float value) {
+	public ExactInterval (float value) {
 		this(new ExactDecimal(value));
 	}
 	
-	public Interval (double value) {
+	public ExactInterval (double value) {
 		this(new ExactDecimal(value));
 	}
 	
-	public Interval add (Interval interval) {
-		return new Interval(this.lowerBound.add(interval.lowerBound), this.upperBound.add(interval.upperBound));
+	public ExactInterval add (ExactInterval interval) {
+		return new ExactInterval(this.lowerBound.add(interval.lowerBound), this.upperBound.add(interval.upperBound));
 	}
 	
-	public Interval subtract (Interval interval) {
-		return new Interval(this.lowerBound.subtract(interval.lowerBound),
+	public ExactInterval subtract (ExactInterval interval) {
+		return new ExactInterval(this.lowerBound.subtract(interval.lowerBound),
 				this.upperBound.subtract(interval.upperBound));
 	}
 	
-	public Interval multiply (Interval interval) {
+	public ExactInterval multiply (ExactInterval interval) {
 		throw new UnsupportedOperationException("Not implemented yet: Interval#multiply(Interval)"); // TODO
 	}
 	
-	public Interval divide (Interval interval) {
+	public ExactInterval divide (ExactInterval interval) {
 		throw new UnsupportedOperationException("Not implemented yet: Interval#divide(Interval)"); // TODO
 	}
 	
-	public Interval abs () {
+	public ExactInterval abs () {
 		if (this.upperBound.compareTo(ExactDecimal.ZERO) > 0 && this.lowerBound.compareTo(ExactDecimal.ZERO) > 0) {
 			return this;
 		}
 		if (this.upperBound.compareTo(ExactDecimal.ZERO) < 0 && this.lowerBound.compareTo(ExactDecimal.ZERO) < 0) {
-			return new Interval(this.upperBound.abs(), this.lowerBound.abs());
+			return new ExactInterval(this.upperBound.abs(), this.lowerBound.abs());
 		}
 		if (this.lowerBound.abs().compareTo(this.upperBound.abs()) > 0) {
-			return new Interval(this.upperBound.abs().multiply(new ExactDecimal(-1, 1)), this.lowerBound.abs());
+			return new ExactInterval(this.upperBound.abs().multiply(new ExactDecimal(-1, 1)), this.lowerBound.abs());
 		}
 		return this;
 	}
