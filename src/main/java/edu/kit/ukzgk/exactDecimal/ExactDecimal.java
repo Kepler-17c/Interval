@@ -12,12 +12,6 @@ import java.math.BigInteger;
  * @version 201711090317
  */
 public class ExactDecimal implements Comparable<ExactDecimal> {
-	private enum Status {
-		VALID,
-		NOT_A_NUMBER,
-		INFINITE;
-	}
-	
 	/**
 	 * Zero constant. Equal to: {@code new ExactDecimal(0)}
 	 */
@@ -57,10 +51,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	public static final ExactDecimal NOT_A_NUMBER = new ExactDecimal(0, 0);
 	
 	/**
-	 * The special value status of the number (e.g. NaN).
-	 */
-	private final Status status;
-	/**
 	 * The numerator of the fraction. Its sign is the sign of the fraction.
 	 */
 	private final BigInteger numerator;
@@ -95,7 +85,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		BigInteger[] fraction = cancelFraction(n, d);
 		this.numerator = sign ? fraction[0].negate() : fraction[0];
 		this.denominator = fraction[1];
-		this.status = this.getStatus();
 	}
 	
 	/**
@@ -121,13 +110,11 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		if (Double.isNaN(value)) {
 			this.numerator = ExactDecimal.NOT_A_NUMBER.numerator;
 			this.denominator = ExactDecimal.NOT_A_NUMBER.denominator;
-			this.status = ExactDecimal.NOT_A_NUMBER.status;
 			return;
 		} else if (Double.isInfinite(value)) {
 			this.numerator = value < 0 ? ExactDecimal.NEGATIVE_INFINITY.numerator
 					: ExactDecimal.POSITIVE_INFINITY.numerator;
 			this.denominator = ExactDecimal.POSITIVE_INFINITY.denominator;
-			this.status = this.getStatus();
 			return;
 		}
 		
@@ -149,7 +136,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		
 		this.numerator = sign ? numerator.negate() : numerator;
 		this.denominator = denominator;
-		this.status = this.getStatus();
 	}
 	
 	/**
@@ -165,13 +151,11 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		if (Float.isNaN(value)) {
 			this.numerator = ExactDecimal.NOT_A_NUMBER.numerator;
 			this.denominator = ExactDecimal.NOT_A_NUMBER.denominator;
-			this.status = ExactDecimal.NOT_A_NUMBER.status;
 			return;
 		} else if (Float.isInfinite(value)) {
 			this.numerator = value < 0 ? ExactDecimal.NEGATIVE_INFINITY.numerator
 					: ExactDecimal.POSITIVE_INFINITY.numerator;
 			this.denominator = ExactDecimal.POSITIVE_INFINITY.denominator;
-			this.status = this.getStatus();
 			return;
 		}
 		
@@ -192,7 +176,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		
 		this.numerator = sign ? numerator.negate() : numerator;
 		this.denominator = denominator;
-		this.status = this.getStatus();
 	}
 	
 	/**
@@ -279,7 +262,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		BigInteger[] fraction = cancelFraction(numerator.abs(), denominator.abs());
 		this.numerator = sign ? fraction[0].negate() : fraction[0];
 		this.denominator = fraction[1];
-		this.status = this.getStatus();
 	}
 	
 	/**
@@ -292,7 +274,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	private ExactDecimal (byte[] value) {
 		this.numerator = new BigInteger(value);
 		this.denominator = BigInteger.ONE;
-		this.status = this.getStatus();
 	}
 	
 	/**
@@ -378,26 +359,6 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		}
 		
 		return string + spaces;
-	}
-	
-	/**
-	 * Determines the special value status:
-	 * <ul>
-	 * <li>Not a Number</li>
-	 * <li>Positive Infinity</li>
-	 * <li>Negative Infinity</li>
-	 * <li>Normal finite value</li>
-	 * </ul>
-	 * 
-	 * @return The special value status.
-	 */
-	private Status getStatus () {
-		if (this.numerator.equals(BigInteger.ZERO) && this.denominator.equals(BigInteger.ZERO)) {
-			return Status.NOT_A_NUMBER;
-		} else if (this.denominator.equals(BigInteger.ZERO)) {
-			return Status.INFINITE;
-		}
-		return Status.VALID;
 	}
 	
 	/**
@@ -528,7 +489,7 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return The sign.
 	 */
 	public int signum () {
-		if (this.status == Status.NOT_A_NUMBER) {
+		if (this.isNaN()) {
 			return 0;
 		}
 		return this.numerator.signum();
@@ -566,7 +527,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return {@code true}, if {@code this} is NaN, {@code false} otherwise.
 	 */
 	public boolean isNaN () {
-		return this.status == Status.NOT_A_NUMBER;
+		// 0 div 0
+		return this.numerator.equals(BigInteger.ZERO) && this.denominator.equals(BigInteger.ZERO);
 	}
 	
 	/**
@@ -575,7 +537,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return {@code true}, if {@code this} is a valid number, {@code false} otherwise.
 	 */
 	public boolean isFinite () {
-		return this.status == Status.VALID;
+		// n div m
+		return !this.denominator.equals(BigInteger.ZERO);
 	}
 	
 	/**
@@ -584,7 +547,8 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return {@code true}, if {@code this} is infinite, {@code false} otherwise.
 	 */
 	public boolean isInfinite () {
-		return this.status == Status.INFINITE;
+		// n div 0
+		return !this.numerator.equals(BigInteger.ZERO) && this.denominator.equals(BigInteger.ZERO);
 	}
 	
 	/**
@@ -606,13 +570,11 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 	 * @return The number as decimal string.
 	 */
 	public String toStringAdvanced (int decimals) {
-		switch (this.status) {
-			case INFINITE:
-				return this.signum() < 0 ? "-Infinity" : "Infinity";
-			case NOT_A_NUMBER:
-				return "NaN";
-			default:
-				break; // do the normal procedure (as for 'VALID')
+		if (this.isInfinite()) {
+			return this.signum() < 0 ? "-Infinity" : "Infinity";
+		}
+		if (this.isNaN()) {
+			return "NaN";
 		}
 		
 		if (decimals < 0) {
