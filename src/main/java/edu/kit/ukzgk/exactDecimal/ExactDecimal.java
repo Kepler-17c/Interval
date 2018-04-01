@@ -641,10 +641,10 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		return numeratorThis.compareTo(numeratorA);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Returns {@code true} if both fractions are equal in numerator and denominator, {@code false} otherwise. Because
+	 * fractions are always kept minimal, {@code true} means mathematically equal or the same special value (infinities
+	 * and NaN).
 	 */
 	@Override
 	public boolean equals (Object o) {
@@ -653,7 +653,7 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		}
 		if (o instanceof ExactDecimal) {
 			ExactDecimal other = (ExactDecimal) o;
-			return this.compareTo(other) == 0;
+			return this.numerator.equals(other.numerator) && this.denominator.equals(other.denominator);
 		}
 		return false;
 	}
