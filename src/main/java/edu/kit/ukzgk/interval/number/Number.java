@@ -79,6 +79,24 @@ package edu.kit.ukzgk.interval.number;
  */
 public interface Number<T> extends Comparable<T> {
 	/**
+	 * Returns the additive neutral element in {@code T}.<br>
+	 * Note: In a correct model, this method would be {@code static}, but {@code abstract} methods cannot be static in
+	 * Java.
+	 * 
+	 * @return The {@code 0}-element of {@code T}.
+	 */
+	public T getZeroElement ();
+	
+	/**
+	 * Returns the multiplicative neutral element in {@code T}.<br>
+	 * Note: In a correct model, this method would be {@code static}, but {@code abstract} methods cannot be static in
+	 * Java.
+	 * 
+	 * @return The {@code 1}-element of {@code T}.
+	 */
+	public T getOneElement ();
+	
+	/**
 	 * Performs the operation for the fields first composition.
 	 * 
 	 * @param number
