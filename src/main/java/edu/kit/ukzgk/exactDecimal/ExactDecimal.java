@@ -657,4 +657,16 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 		}
 		return false;
 	}
+	
+	/**
+	 * Hashes the fraction by XORing the hashes of numerator and denominator.
+	 * 
+	 * @see BigInteger#hashCode()
+	 */
+	@Override
+	public int hashCode () {
+		int numeratorHash = this.numerator.hashCode();
+		int denominatorHash = this.denominator.hashCode();
+		return numeratorHash ^ denominatorHash;
+	}
 }
