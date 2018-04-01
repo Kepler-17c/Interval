@@ -670,21 +670,15 @@ public class ExactDecimal implements Comparable<ExactDecimal> {
 			return -1;
 		}
 		
-		// all combinations with +/- infinity
+		// infinity:
+		// denominator is 0
+		// numerator determines the sign
 		if (this.isInfinite() && a.isInfinite()) {
-			if (this.signum() == a.signum()) {
-				return 0;
-			} else if (this.signum() < 0) {
-				// - compareTo +
-				return -1;
-			} else {
-				// + compareTo -
-				return 1;
-			}
+			return Integer.signum(this.signum() - a.signum());
 		} else if (this.isInfinite()) {
-			return this.signum() < 0 ? -1 : 1;
+			return this.signum();
 		} else if (a.isInfinite()) {
-			return a.signum() < 0 ? 1 : -1;
+			return -a.signum();
 		}
 		
 		// both 0
